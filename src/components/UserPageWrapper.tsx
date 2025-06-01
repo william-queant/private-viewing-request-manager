@@ -1,4 +1,4 @@
-import { Box, Container, Heading } from "@radix-ui/themes";
+import { Box, Container } from "@radix-ui/themes";
 import type { User } from "~/types/User";
 
 interface UserPageWrapperProps {
@@ -7,7 +7,7 @@ interface UserPageWrapperProps {
 }
 
 export function UserPageWrapper({ children, user }: UserPageWrapperProps) {
-  const { id, name } = user;
+  const { id } = user;
 
   return (
     <Box
@@ -21,12 +21,7 @@ export function UserPageWrapper({ children, user }: UserPageWrapperProps) {
         padding: "16px",
       }}
     >
-      <Container size="3">
-        <Heading mb="2" size="3">
-          This is the {name}'s screen...
-        </Heading>
-        {children}
-      </Container>
+      <Container size="3">{children}</Container>
     </Box>
   );
 }

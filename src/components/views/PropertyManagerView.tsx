@@ -23,7 +23,7 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
   return (
     <Box style={{ padding: "20px" }}>
       <Heading size="6" mb="4">
-        Property Manager Dashboard
+        Property Manager Dashboard for {name}
       </Heading>
 
       <Text size="3" mb="6" color="gray">
