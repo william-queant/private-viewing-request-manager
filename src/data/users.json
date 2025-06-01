@@ -1,5 +1,6 @@
 [
   {
+    "id": "ava-wright",
     "name": "Ava Wright",
     "image": "AvaWright.jpg",
     "role": "Property Manager",
@@ -7,6 +8,7 @@
     "email": "ava.wright@easyrental.co.nz"
   },
   {
+    "id": "ryan-fox",
     "name": "Ryan Fox",
     "image": "RyanFox.jpg",
     "role": "Potential Tenant",
@@ -14,6 +16,7 @@
     "email": "ryan.fox@gmail.com"
   },
   {
+    "id": "sally-mason",
     "name": "Sally Mason",
     "image": "SallyMason.jpg",
     "role": "Potential Tenant",
@@ -21,6 +24,7 @@
     "email": "sally.mason@gmail.com"
   },
   {
+    "id": "ben-walter",
     "name": "Ben Walter",
     "image": "BenWalter.jpg",
     "role": "Potential Tenant",
@@ -28,6 +32,7 @@
     "email": "ben.walter@xero.co.nz"
   },
   {
+    "id": "frank-whitaker",
     "name": "Frank Whitaker",
     "image": "FrankWhitaker.jpg",
     "role": "Potential Tenant",

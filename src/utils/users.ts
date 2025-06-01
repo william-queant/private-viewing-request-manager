@@ -58,3 +58,16 @@ export const getInitials = (name: string): string =>
     .map((n) => n[0])
     .join("")
     .toUpperCase();
+
+// Scroll to a user element by ID and optionally execute a callback
+export const scrollToUser = (id: string, onClick?: () => void): void => {
+  const element = document.getElementById(`page-${id}`);
+  if (element) {
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+  }
+  onClick?.();
+};

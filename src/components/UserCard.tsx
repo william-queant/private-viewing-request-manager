@@ -1,13 +1,22 @@
 import { Box, Card, Text, Flex } from "@radix-ui/themes";
 import type { User } from "~/types/User";
 import { UserAvatar } from "./UserAvatar";
+import { scrollToUser } from "~/utils/users";
 
 interface PropertyManagerCardProps {
   user: User;
+  onClick?: () => void;
 }
 
-export function PropertyManagerCard({ user }: PropertyManagerCardProps) {
-  const { name, role } = user;
+export function PropertyManagerCard({
+  user,
+  onClick,
+}: PropertyManagerCardProps) {
+  const { id, name, role } = user;
+
+  const handleClick = () => {
+    scrollToUser(id, onClick);
+  };
 
   return (
     <Card
@@ -18,7 +27,9 @@ export function PropertyManagerCard({ user }: PropertyManagerCardProps) {
         maxWidth: "330px",
         padding: 0,
         overflow: "hidden",
+        cursor: "pointer",
       }}
+      onClick={handleClick}
     >
       <Flex align="stretch" style={{ height: "100%", minHeight: "70px" }}>
         <UserAvatar user={user} />

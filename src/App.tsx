@@ -1,8 +1,9 @@
-import { Box, Text, Container, Section, Card } from "@radix-ui/themes";
-import { useEffect } from "react";
+import { Box, Text } from "@radix-ui/themes";
+import { useEffect, useRef } from "react";
 import { withStickyBanner } from "~/components/StickyBanner";
 import { UserBanner } from "~/components/UserBanner";
 import { useUserStore } from "~/stores/userStore";
+import { UserPageWrapper } from "~/components/UserPageWrapper";
 
 // Create the sticky banner component using the HOC
 const StickyUserBanner = withStickyBanner(UserBanner);
@@ -10,55 +11,59 @@ const StickyUserBanner = withStickyBanner(UserBanner);
 function App() {
   const users = useUserStore((state) => state.users);
   const loadUsersAsync = useUserStore((state) => state.loadUsersAsync);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll to Ava's screen (Property Manager)
+  // This is the first user in the list, assumed to be the Property Manager
+  const scrollToAva = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  };
 
   // Load users with avatars on component mount
   useEffect(() => {
     loadUsersAsync();
   }, [loadUsersAsync]);
+
+  // Scroll to Ava's screen (Property Manager) on resize
+  useEffect(() => {
+    window.addEventListener("resize", scrollToAva);
+    return () => window.removeEventListener("resize", scrollToAva);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Box>
+    <Box
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {/* Sticky Banner */}
-      <StickyUserBanner users={users} />
-
-      {/* Main Content */}
-      <Container size="4" px="4">
-        <Section py="9">
-          <Box>
-            <Text
-              size="8"
-              weight="bold"
-              mb="4"
-              style={{ fontSize: "var(--font-size-8)", display: "block" }}
-            >
-              Welcome to Our Platform
+      <StickyUserBanner users={users} />{" "}
+      {/* Main Content - Horizontal Scrolling Container */}
+      <Box
+        ref={scrollContainerRef}
+        style={{
+          flex: 1,
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {Array.from(users, (user) => (
+          <UserPageWrapper key={`page-${user.id}`} user={user}>
+            <Text size="6" weight="bold" mb="4">
+              test
             </Text>
-            <Text size="4" color="gray" mb="6">
-              This is a responsive page built with Radix UI following best
-              practices. The banner above is sticky and contains user cards that
-              adapt to different screen sizes.
-            </Text>
-
-            {/* Demo content to show scrolling */}
-            {Array.from({ length: 20 }, (_, i) => (
-              <Card key={i} style={{ marginBottom: "1rem", padding: "1rem" }}>
-                <Text
-                  size="5"
-                  weight="medium"
-                  style={{ marginBottom: "0.5rem", display: "block" }}
-                >
-                  Content Section {i + 1}
-                </Text>
-                <Text size="3" color="gray">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-              </Card>
-            ))}
-          </Box>
-        </Section>
-      </Container>
+          </UserPageWrapper>
+        ))}
+      </Box>
     </Box>
   );
 }
