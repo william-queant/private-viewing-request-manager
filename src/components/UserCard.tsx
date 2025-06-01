@@ -10,14 +10,14 @@ export function UserCard({ user }: UserCardProps) {
     <Card
       size="2"
       style={{
-        minWidth: "250px",
+        minWidth: "200px",
         flex: "1 1 auto",
-        maxWidth: "350px",
+        maxWidth: "300px",
         padding: 0,
         overflow: "hidden",
       }}
     >
-      <Flex align="stretch" style={{ height: "100%", minHeight: "120px" }}>
+      <Flex align="stretch" style={{ height: "100%", minHeight: "70px" }}>
         <Avatar
           size="6"
           src={user.image}
@@ -28,7 +28,7 @@ export function UserCard({ user }: UserCardProps) {
           radius="none"
           style={{
             flexShrink: 0,
-            width: "120px",
+            width: "70px",
             height: "100%",
             borderRadius: "0",
             objectFit: "cover",
@@ -37,7 +37,8 @@ export function UserCard({ user }: UserCardProps) {
         <Box
           style={{
             flex: 1,
-            padding: "16px",
+            paddingInline: "16px",
+            paddingBlock: "8px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -46,14 +47,8 @@ export function UserCard({ user }: UserCardProps) {
           <Text as="div" size="4" weight="bold" style={{ marginBottom: "4px" }}>
             {user.name}
           </Text>
-          <Text as="div" size="2" color="blue" style={{ marginBottom: "2px" }}>
+          <Text as="div" size="2" color="gray" style={{ marginBottom: "2px" }}>
             {user.role}
-          </Text>
-          <Text as="div" size="1" color="gray" style={{ marginBottom: "1px" }}>
-            {user.phone}
-          </Text>
-          <Text as="div" size="1" color="gray">
-            {user.email}
           </Text>
         </Box>
       </Flex>

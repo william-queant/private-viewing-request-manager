@@ -1,39 +1,14 @@
 import { Box, Text, Container, Section, Card } from "@radix-ui/themes";
-import AvaWrightImage from "~/assets/AvaWright.jpg";
-import RyanFoxImage from "~/assets/RyanFox.jpg";
-import SallyMasonImage from "~/assets/SallyMason.jpg";
-import type { User } from "~/types/User";
 import { withStickyBanner } from "~/components/StickyBanner";
 import { UserBanner } from "~/components/UserBanner";
-
-const users: User[] = [
-  {
-    name: "Ava Wright",
-    image: AvaWrightImage,
-    role: "Property Manager",
-    phone: "+64 21 456 7890",
-    email: "ava.wright@gmail.com",
-  },
-  {
-    name: "Ryan Fox",
-    image: RyanFoxImage,
-    role: "Potential Tenant 1",
-    phone: "+64 27 123 4567",
-    email: "ryan.fox@gmail.com",
-  },
-  {
-    name: "Sally Mason",
-    image: SallyMasonImage,
-    role: "Potential Tenant 2",
-    phone: "+64 22 987 6543",
-    email: "sally.mason@gmail.com",
-  },
-];
+import { useUserStore } from "~/stores/userStore";
 
 // Create the sticky banner component using the HOC
 const StickyUserBanner = withStickyBanner(UserBanner);
 
 function App() {
+  const users = useUserStore((state) => state.users);
+
   return (
     <Box>
       {/* Sticky Banner */}
