@@ -1,9 +1,10 @@
-import { Box, Text, Flex, Container, Section, Card } from "@radix-ui/themes";
+import { Box, Text, Container, Section, Card } from "@radix-ui/themes";
 import AvaWrightImage from "~/assets/AvaWright.jpg";
 import RyanFoxImage from "~/assets/RyanFox.jpg";
 import SallyMasonImage from "~/assets/SallyMason.jpg";
 import type { User } from "~/types/User";
-import { UserCard } from "~/components/UserCard";
+import { withStickyBanner } from "~/components/StickyBanner";
+import { UserBanner } from "~/components/UserBanner";
 
 const users: User[] = [
   {
@@ -29,28 +30,14 @@ const users: User[] = [
   },
 ];
 
+// Create the sticky banner component using the HOC
+const StickyUserBanner = withStickyBanner(UserBanner);
+
 function App() {
   return (
     <Box>
       {/* Sticky Banner */}
-      <Box
-        position="sticky"
-        top="0"
-        style={{
-          backgroundColor: "var(--color-background)",
-          borderBottom: "1px solid var(--gray-6)",
-          zIndex: 100,
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <Container size="4" px="4" py="3">
-          <Flex gap="4" justify="center" wrap="wrap">
-            {users.map((user) => (
-              <UserCard key={user.name} user={user} />
-            ))}
-          </Flex>
-        </Container>
-      </Box>
+      <StickyUserBanner users={users} />
 
       {/* Main Content */}
       <Container size="4" px="4">
