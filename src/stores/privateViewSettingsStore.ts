@@ -1,21 +1,27 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface PrivateViewSettingsStore {
-  isPrivateViewingRequestAllowed: boolean;
-  setPrivateViewingRequestAllowed: (allowed: boolean) => void;
-  togglePrivateViewingRequestAllowed: () => void;
+  isRequestAllowed: boolean;
+  setRequestAllowed: (allowed: boolean) => void;
+  toggleRequestAllowed: () => void;
 }
 
-export const usePrivateViewSettingsStore = create<PrivateViewSettingsStore>(
-  (set) => ({
-    isPrivateViewingRequestAllowed: false,
+export const usePrivateViewSettingsStore = create<PrivateViewSettingsStore>()(
+  persist(
+    (set) => ({
+      isRequestAllowed: false,
 
-    setPrivateViewingRequestAllowed: (allowed) =>
-      set({ isPrivateViewingRequestAllowed: allowed }),
+      setRequestAllowed: (allowed) => set({ isRequestAllowed: allowed }),
 
-    togglePrivateViewingRequestAllowed: () =>
-      set((state) => ({
-        isPrivateViewingRequestAllowed: !state.isPrivateViewingRequestAllowed,
-      })),
-  })
+      toggleRequestAllowed: () =>
+        set((state) => ({
+          isRequestAllowed: !state.isRequestAllowed,
+        })),
+    }),
+    {
+      name: "private-view-settings-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
 );
