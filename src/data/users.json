@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Ava Wright",
+    "image": "AvaWright.jpg",
+    "role": "Property Manager",
+    "phone": "+64 21 456 7890",
+    "email": "ava.wright@easyrental.co.nz"
+  },
+  {
+    "name": "Ryan Fox",
+    "image": "RyanFox.jpg",
+    "role": "Potential Tenant",
+    "phone": "+64 27 123 4567",
+    "email": "ryan.fox@gmail.com"
+  },
+  {
+    "name": "Sally Mason",
+    "image": "SallyMason.jpg",
+    "role": "Potential Tenant",
+    "phone": "+64 22 987 6543",
+    "email": "sally.mason@gmail.com"
+  },
+  {
+    "name": "Ben Walter",
+    "image": "BenWalter.jpg",
+    "role": "Potential Tenant",
+    "phone": "+64 223 857 1887",
+    "email": "ben.walter@xero.co.nz"
+  },
+  {
+    "name": "Frank Whitaker",
+    "image": "FrankWhitaker.jpg",
+    "role": "Potential Tenant",
+    "phone": "+64 21 111 8897",
+    "email": "frank_whitaker512@gmail.com"
+  }
+]
