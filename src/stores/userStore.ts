@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { User } from "~/types/User";
-import { loadUsers, loadUsersSync } from "~/utils/loadUsers";
+import { loadUsers, loadUsersSync } from "~/utils/users";
 
 interface UserStore {
   users: User[];
@@ -10,6 +10,7 @@ interface UserStore {
   addUser: (user: User) => void;
   removeUser: (email: string) => void;
   updateUser: (email: string, updatedUser: Partial<User>) => void;
+  toggleUserConnection: (email: string) => void;
 }
 
 // Start with synchronous users (without images loaded)
@@ -19,6 +20,7 @@ export const useUserStore = create<UserStore>((set) => ({
   users: initialUsers,
   isLoading: false,
   setUsers: (users) => set({ users }),
+
   loadUsersAsync: async () => {
     set({ isLoading: true });
     try {
@@ -29,7 +31,9 @@ export const useUserStore = create<UserStore>((set) => ({
       set({ isLoading: false });
     }
   },
+
   addUser: (user) => set((state) => ({ users: [...state.users, user] })),
+
   removeUser: (email) =>
     set((state) => ({
       users: state.users.filter((user) => user.email !== email),
@@ -38,6 +42,15 @@ export const useUserStore = create<UserStore>((set) => ({
     set((state) => ({
       users: state.users.map((user) =>
         user.email === email ? { ...user, ...updatedUser } : user
+      ),
+    })),
+
+  toggleUserConnection: (email) =>
+    set((state) => ({
+      users: state.users.map((user) =>
+        user.email === email
+          ? { ...user, isConnected: !user.isConnected }
+          : user
       ),
     })),
 }));

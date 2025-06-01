@@ -34,6 +34,7 @@ export const loadUsers = async (): Promise<User[]> => {
     users.map(async (user: User) => ({
       ...user,
       image: await importAvatar(user.image),
+      isConnected: user.role === "Property Manager",
     }))
   );
 
@@ -46,5 +47,14 @@ export const loadUsersSync = (): User[] => {
   return users.map((user: User) => ({
     ...user,
     image: user.image, // Will be updated when async version loads
+    isConnected: user.role === "Property Manager",
   }));
 };
+
+// Extract initials from a name
+export const getInitials = (name: string): string =>
+  name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
