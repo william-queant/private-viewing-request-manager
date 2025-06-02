@@ -26,8 +26,11 @@ export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
               existingSlot.user === slot.user &&
               existingSlot.status === "Available"
           );
+          const usersSelectedSlots = state.selectedSlots.filter(
+            (existingSlot) => existingSlot.user.id === slot.user.id
+          );
 
-          if (isAlreadySelected || state.selectedSlots.length >= 3) {
+          if (isAlreadySelected || usersSelectedSlots.length >= 3) {
             return state;
           }
 
