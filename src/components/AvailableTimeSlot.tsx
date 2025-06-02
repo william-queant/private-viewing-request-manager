@@ -1,6 +1,7 @@
 import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import type { User } from "~/types/User";
 import { usePrivateViewSettingsStore } from "~/stores/privateViewSettingsStore";
+import { useSelectedSlotsStore } from "~/stores/selectedSlotsStore";
 import type { TimeSlot } from "~/types/Time";
 import { formatTime24 } from "~/utils/time";
 import { DateTime } from "luxon";
@@ -42,8 +43,9 @@ const generateTimeSlots = (
   let currentTime = from; // Start with "from" formatted as time string
 
   while (currentTime <= to) {
-    // Create a time slot object
+    // Create a time slot object with unique ID
     const newSlot: TimeSlot = {
+      id: `${user.id}-${day}-${currentTime}`, // Unique identifier
       day,
       time: currentTime,
       user,
@@ -71,21 +73,18 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
     (state) => state.globalToHour
   );
   const duration = usePrivateViewSettingsStore((state) => state.duration);
+  const getSlotsByUser = useSelectedSlotsStore((state) => state.getSlotsByUser);
 
   const handleSlotToggle = (timeSlot: TimeSlot) => {
     setSelectedSlots((prev) => {
-      // Check if slot is already selected by comparing day and time
+      // Check if slot is already selected by comparing unique ID
       const isAlreadySelected = prev.some(
-        (slot: TimeSlot) =>
-          slot.day === timeSlot.day && slot.time === timeSlot.time
+        (slot: TimeSlot) => slot.id === timeSlot.id
       );
 
       if (isAlreadySelected) {
         // Remove slot if already selected
-        return prev.filter(
-          (slot: TimeSlot) =>
-            !(slot.day === timeSlot.day && slot.time === timeSlot.time)
-        );
+        return prev.filter((slot: TimeSlot) => slot.id !== timeSlot.id);
       } else {
         // Add slot if less than 3 are selected
         if (prev.length < 3) {
@@ -95,24 +94,12 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
       }
     });
   };
-
   const isSlotSelected = (timeSlot: TimeSlot) =>
-    selectedSlots.some(
-      (slot) => slot.day === timeSlot.day && slot.time === timeSlot.time
-    );
-
-  const isBelongingToUser = (timeSlot: TimeSlot) =>
-    selectedSlots.some(
-      (slot) =>
-        slot.day === timeSlot.day &&
-        slot.time === timeSlot.time &&
-        slot.user.id === timeSlot.user.id
-    );
-
+    selectedSlots.some((slot) => slot.id === timeSlot.id);
   const canSelectMore = selectedSlots.length < 3;
 
-  const summary = selectedSlots
-    .filter((slot: TimeSlot) => isBelongingToUser(slot))
+  const userSlots = getSlotsByUser(user);
+  const summary = userSlots
     .sort(
       (a, b) =>
         DateTime.fromISO(`${a.day}T${a.time}:00`).toMillis() -
@@ -134,9 +121,7 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
   );
 
   const selectedSlotTitle =
-    selectedSlots.length === 0
-      ? "No Selected time slots"
-      : "Selected time slots:";
+    userSlots.length === 0 ? "No Selected time slots" : "Selected time slots:";
 
   return (
     <Box>
@@ -149,11 +134,10 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
           {timeSlots.map((timeSlot) => {
             const isSelected = isSlotSelected(timeSlot);
             const isDisabled = !canSelectMore && !isSelected;
-            const key = `timeslot-${timeSlot.day}-${timeSlot.time}`;
 
             return (
               <Button
-                key={key}
+                key={timeSlot.id}
                 size="2"
                 variant={isSelected ? "solid" : "outline"}
                 color={isSelected ? "blue" : "gray"}

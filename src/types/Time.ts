@@ -45,6 +45,7 @@ export const TimeSlotStatusValues = {
 };
 
 export type TimeSlot = {
+  id: string; // Unique identifier for the time slot
   day: string; // ISO date string, e.g., "2023-10-01"
   time: string; // 24-hour format, e.g., "14:00"
   user: User;

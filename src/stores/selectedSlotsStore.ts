@@ -9,26 +9,20 @@ interface SelectedSlotsStore {
   removeSlot: (slot: TimeSlot) => void;
   clearSlots: (user: User) => void;
   updateSlotStatus: (slot: TimeSlot, newStatus: TimeSlotStatus) => void;
+  getSlotsByUser: (user: User) => TimeSlot[];
 }
 
 export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       selectedSlots: [],
-
       addSlot: (slot: TimeSlot) => {
         set((state) => {
-          // Check if slot is already selected
+          // Check if slot is already selected using unique ID
           const isAlreadySelected = state.selectedSlots.some(
-            (existingSlot) =>
-              existingSlot.day === slot.day &&
-              existingSlot.time === slot.time &&
-              existingSlot.user === slot.user &&
-              existingSlot.status === "Available"
+            (existingSlot) => existingSlot.id === slot.id
           );
-          const usersSelectedSlots = state.selectedSlots.filter(
-            (existingSlot) => existingSlot.user.id === slot.user.id
-          );
+          const usersSelectedSlots = get().getSlotsByUser(slot.user);
 
           if (isAlreadySelected || usersSelectedSlots.length >= 3) {
             return state;
@@ -42,16 +36,10 @@ export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
           };
         });
       },
-
       removeSlot: (slot: TimeSlot) => {
         set((state) => ({
           selectedSlots: state.selectedSlots.filter(
-            (existingSlot) =>
-              !(
-                existingSlot.day === slot.day &&
-                existingSlot.time === slot.time &&
-                existingSlot.user === slot.user
-              )
+            (existingSlot) => existingSlot.id !== slot.id
           ),
         }));
       },
@@ -63,17 +51,18 @@ export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
           ),
         }));
       },
-
       updateSlotStatus: (slot: TimeSlot, newStatus: TimeSlotStatus) => {
         set((state) => ({
           selectedSlots: state.selectedSlots.map((existingSlot) =>
-            existingSlot.day === slot.day &&
-            existingSlot.time === slot.time &&
-            existingSlot.user.id === slot.user.id
+            existingSlot.id === slot.id
               ? { ...existingSlot, status: newStatus }
               : existingSlot
           ),
         }));
+      },
+      getSlotsByUser: (user: User) => {
+        const state = get();
+        return state.selectedSlots.filter((slot) => slot.user.id === user.id);
       },
     }),
     {
