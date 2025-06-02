@@ -130,36 +130,15 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
   };
 
   return (
-    <Box style={{ padding: "20px" }}>
-      <Card
-        size="2"
-        style={{
-          minWidth: "150px",
-          flex: "1 1 auto",
-          padding: 0,
-          overflow: "hidden",
-        }}
-      >
-        <Flex align="stretch" style={{ height: "100%", minHeight: "70px" }}>
-          <UserAvatar user={user} />
-          <Box
-            style={{
-              flex: 1,
-              paddingInline: "16px",
-              paddingBlock: "8px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Heading size="6" mb="4" style={{ marginBlock: 0 }}>
-              {name}'s Viewing Manager
-            </Heading>
-          </Box>
-        </Flex>
-      </Card>
+    <Box>
+      <Flex align="stretch" style={{ height: "100%" }}>
+        <UserAvatar user={user} isSmall isCircle />
+        <Heading size="6" mb="4" style={{ marginBlock: 5, marginInline: 10 }}>
+          {name}'s Viewing Request Manager
+        </Heading>
+      </Flex>
       {/* Viewing Requests Section */}
-      <Box style={{ paddingBlock: "20px" }}>
+      <Box style={{ paddingTop: "20px" }}>
         <Card>
           <Text as="label" size="2">
             <Flex gap="2">

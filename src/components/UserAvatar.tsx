@@ -5,19 +5,26 @@ import type { ReactElement } from "react";
 
 interface UserAvatarProps {
   user: User;
+  isCircle?: boolean;
+  isSmall?: boolean;
 }
 
-const AvatarBox = ({ children }: { children: ReactElement }) => (
+const AvatarBox = ({
+  isSmall,
+  children,
+}: {
+  isSmall?: boolean;
+  children: ReactElement;
+}) => (
   <Box
     style={{
       flexShrink: 0,
-      width: "70px",
+      width: isSmall ? "40px" : "70px",
       height: "100%",
       position: "relative",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "var(--gray-2)",
       overflow: "hidden",
     }}
   >
@@ -25,7 +32,11 @@ const AvatarBox = ({ children }: { children: ReactElement }) => (
   </Box>
 );
 
-export function UserAvatar({ user }: UserAvatarProps) {
+export function UserAvatar({
+  user,
+  isSmall = false,
+  isCircle = false,
+}: UserAvatarProps) {
   const { image, name } = user;
 
   // Check if the image is a loaded URL (contains path separators or protocols) vs just a filename
@@ -44,20 +55,19 @@ export function UserAvatar({ user }: UserAvatarProps) {
   }
 
   return (
-    <AvatarBox>
+    <AvatarBox isSmall={isSmall}>
       <Avatar
         style={{
           flexShrink: 0,
-          width: "70px",
+          width: isSmall ? "40px" : "70px",
           height: "100%",
           position: "relative",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "var(--gray-2)",
         }}
         src={image}
-        radius="none"
+        radius={isCircle ? "full" : "none"}
         fallback={getInitials(name)}
       />
     </AvatarBox>
