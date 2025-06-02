@@ -17,6 +17,7 @@ interface OpenDaysStore {
 interface GlobalHourStore {
   globalFromHour: string;
   globalToHour: string;
+  duration: number; // Duration in minutes, default to 15 minutes
   setGlobalFromHour: (hour: string) => void;
   setGlobalToHour: (hour: string) => void;
 }
@@ -54,7 +55,11 @@ export const usePrivateViewSettingsStore = create<
             } else {
               currentDays.add(day); // Add the day if it doesn't exist
             }
-            return { openDays: Array.from(currentDays) };
+            return {
+              openDays: Array.from(currentDays).sort((a, b) => {
+                return weekDays.indexOf(a) - weekDays.indexOf(b);
+              }),
+            }; // Sort the days
           }),
       };
 
@@ -66,6 +71,8 @@ export const usePrivateViewSettingsStore = create<
 
         globalToHour: "17:00", // Default to 5:00 PM
         setGlobalToHour: (hour) => set({ globalToHour: hour }),
+
+        duration: 15, // Default duration in minutes
       };
 
       return {

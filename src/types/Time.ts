@@ -1,3 +1,5 @@
+import type { User } from "./User";
+
 export type AmPm = "AM" | "PM";
 
 export const AmPmValues = {
@@ -33,3 +35,10 @@ export const weekDays: Day[] = [
   DaysValues.Saturday,
   DaysValues.Sunday,
 ] as const;
+
+export type TimeSlot = {
+  day: Day;
+  time: string; // 24-hour format, e.g., "14:00"
+  user: User;
+  status: "available" | "booked" | "pending";
+};

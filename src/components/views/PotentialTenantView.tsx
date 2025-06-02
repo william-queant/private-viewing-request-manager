@@ -1,7 +1,7 @@
 import { Box, Flex, Heading } from "@radix-ui/themes";
 import type { User } from "~/types/User";
 import { UserAvatar } from "../UserAvatar";
-import { PropertyDetails } from "./propertyDetail";
+import { PropertyDetails } from "./PropertyDetail";
 import { RequestDialog } from "../RequestDialog";
 import { useState } from "react";
 
@@ -15,12 +15,10 @@ export function PotentialTenantView({ user }: PotentialTenantViewProps) {
   const [isDialogOpened, setIsDialogOpened] = useState(false);
 
   const handleRequestButtonClick = () => {
-    console.log(`Request button clicked for ${name}`);
     setIsDialogOpened(true);
   };
 
   const handleRequestDialogClose = () => {
-    console.log(`Request dialog closed for ${name}`);
     setIsDialogOpened(false);
   };
 

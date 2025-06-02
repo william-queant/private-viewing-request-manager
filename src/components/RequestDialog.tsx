@@ -1,4 +1,8 @@
-import { Cross2Icon } from "@radix-ui/react-icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Cross2Icon,
+} from "@radix-ui/react-icons";
 import {
   Button,
   Dialog,
@@ -11,6 +15,9 @@ import { useState } from "react";
 import { DateTime } from "luxon";
 import type { User } from "~/types/User";
 import { UserAvatar } from "./UserAvatar";
+import { AvailableTimeSlot } from "./AvailableTimeSlot";
+import { usePrivateViewSettingsStore } from "~/stores/privateViewSettingsStore";
+import { availableDateISO } from "~/utils/time";
 
 interface RequestDialogProps {
   isOpen: boolean;
@@ -21,11 +28,16 @@ interface RequestDialogProps {
 const today = DateTime.local().toISODate();
 
 export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
-  const [preferredDate, setPreferredDate] = useState(today);
+  const openDays = usePrivateViewSettingsStore((state) => state.openDays);
+
+  const [preferredDate, setPreferredDate] = useState(
+    availableDateISO(today, 1, openDays)
+  );
   const [preferredTime, setPreferredTime] = useState([]);
 
+  //#region Dialog functions
   const formReset = () => {
-    setPreferredDate("");
+    setPreferredDate(availableDateISO(today, 1, openDays));
     setPreferredTime([]);
   };
 
@@ -40,28 +52,42 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
     formReset();
     onClose();
   };
+  //#endregion
 
-  const handleToday = () => {
-    setPreferredDate(today);
+  //#region Buttons for the Day
+  const handleNextAvailable = () => {
+    const newDate = availableDateISO(today, 1, openDays);
+    if (newDate) {
+      setPreferredDate(newDate);
+    }
   };
 
   const handlePrevious = () => {
-    const newDate = DateTime.fromISO(preferredDate)
-      .plus({ days: -1 })
+    const daysToAdd = -1;
+    const prevDay = DateTime.fromISO(preferredDate || today)
+      .plus({ days: daysToAdd })
       .toISODate();
+
+    const newDate = availableDateISO(prevDay, daysToAdd, openDays);
+
     if (newDate) {
       setPreferredDate(newDate);
     }
   };
 
   const handleNext = () => {
-    const newDate = DateTime.fromISO(preferredDate)
-      .plus({ days: 1 })
+    const daysToAdd = 1;
+    const nextDay = DateTime.fromISO(preferredDate || today)
+      .plus({ days: daysToAdd })
       .toISODate();
+
+    const newDate = availableDateISO(nextDay, daysToAdd, openDays);
+
     if (newDate) {
       setPreferredDate(newDate);
     }
   };
+  //#endregion
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={handleClose}>
@@ -86,39 +112,45 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
           Pencil up to three available time slots for your viewing request.
         </Text>
 
-        <Button
-          variant="ghost"
-          color="gray"
-          onClick={handleToday}
-          style={{ marginTop: 10 }}
-        >
-          Today
-        </Button>
+        <Flex align="center" gap="3" justify="center" style={{ marginTop: 30 }}>
+          <Button
+            variant="outline"
+            color="gray"
+            size={"2"}
+            onClick={handleNextAvailable}
+          >
+            Next Available Day
+          </Button>
+        </Flex>
 
-        <Button
-          variant="soft"
-          color="gray"
-          onClick={handlePrevious}
-          style={{ marginTop: 10 }}
+        <Flex
+          align="center"
+          gap="3"
+          justify="between"
+          style={{ marginBlock: 10 }}
         >
-          Previous
-        </Button>
+          <IconButton
+            variant="soft"
+            color="gray"
+            onClick={handlePrevious}
+            disabled={
+              DateTime.fromISO(preferredDate || today) <=
+              DateTime.fromISO(today)
+            }
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+          <Heading size="4">
+            {DateTime.fromISO(preferredDate || today).toLocaleString(
+              DateTime.DATE_HUGE
+            )}
+          </Heading>
+          <IconButton variant="soft" color="gray" onClick={handleNext}>
+            <ChevronRightIcon />
+          </IconButton>
+        </Flex>
 
-        <Heading size="4">
-          {DateTime.fromISO(preferredDate).toLocaleString(DateTime.DATE_HUGE)}
-        </Heading>
-        <Heading size="4">
-          {DateTime.fromISO(preferredDate).toISODate()}
-        </Heading>
-
-        <Button
-          variant="soft"
-          color="gray"
-          onClick={handleNext}
-          style={{ marginTop: 10 }}
-        >
-          Next
-        </Button>
+        <AvailableTimeSlot day={preferredDate || today} user={user} />
 
         <Flex direction="column" gap="4" style={{ marginTop: 20 }}>
           <Flex gap="3" mt="4" justify="end">

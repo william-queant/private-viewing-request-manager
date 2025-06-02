@@ -15,6 +15,7 @@ export function PropertyDetails(props: PropertyDetails) {
   const isPrivateViewingRequestAllowed = usePrivateViewSettingsStore(
     (state) => state.isRequestAllowed
   );
+  const openDays = usePrivateViewSettingsStore((state) => state.openDays);
 
   const requestLabel = isPrivateViewingRequestAllowed
     ? "Request a Private Viewing"
@@ -72,7 +73,7 @@ export function PropertyDetails(props: PropertyDetails) {
         size="4"
         variant="solid"
         mb="3"
-        disabled={!isPrivateViewingRequestAllowed}
+        disabled={!isPrivateViewingRequestAllowed || openDays.length === 0}
         onClick={handleClick}
       >
         {requestLabel}

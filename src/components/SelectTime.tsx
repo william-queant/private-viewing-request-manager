@@ -2,6 +2,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { Box, Button, Text } from "@radix-ui/themes";
 import { Label, Select } from "radix-ui";
 import { useEffect, useState } from "react";
+import { usePrivateViewSettingsStore } from "~/stores/privateViewSettingsStore";
 import { convert24hoursTo12, getAMPM } from "~/utils/time";
 
 interface SelectTimeProps {
@@ -57,6 +58,7 @@ const TimeSelector = (props: TimeSelectorProps) => {
 
 export function SelectTime(props: SelectTimeProps) {
   const { name: id, label, selectedTime, onSelectedTime } = props;
+  const duration = usePrivateViewSettingsStore((state) => state.duration);
 
   const hoursId = `${id}-hours`;
   const minutesId = `${id}-minutes`;
@@ -75,6 +77,7 @@ export function SelectTime(props: SelectTimeProps) {
     onSelectedTime(time);
   }, [hours, minutes, onSelectedTime]);
 
+  //#region Handlers
   const handleHourChange = (value: string) => {
     setHours(value);
   };
@@ -94,6 +97,7 @@ export function SelectTime(props: SelectTimeProps) {
       setHours(newHour.toString().padStart(2, "0"));
     }
   };
+  //#endregion
 
   const TimeOptions = (
     id: string,
@@ -135,7 +139,7 @@ export function SelectTime(props: SelectTimeProps) {
       />
       <Text size="2">:</Text>
       <TimeSelector
-        options={() => TimeOptions(minutesId, "minutes", 15)}
+        options={() => TimeOptions(minutesId, "minutes", duration)}
         id={minutesId}
         defaultValue={minutes}
         onValueChange={handleMinuteChange}
