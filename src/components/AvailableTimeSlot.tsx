@@ -71,9 +71,8 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
     (state) => state.globalToHour
   );
   const duration = usePrivateViewSettingsStore((state) => state.duration);
-  const handleSlotToggle = (timeSlot: TimeSlot) => {
-    console.log(timeSlot, selectedSlots);
 
+  const handleSlotToggle = (timeSlot: TimeSlot) => {
     setSelectedSlots((prev) => {
       // Check if slot is already selected by comparing day and time
       const isAlreadySelected = prev.some(
@@ -101,9 +100,19 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
     selectedSlots.some(
       (slot) => slot.day === timeSlot.day && slot.time === timeSlot.time
     );
+
+  const isBelongingToUser = (timeSlot: TimeSlot) =>
+    selectedSlots.some(
+      (slot) =>
+        slot.day === timeSlot.day &&
+        slot.time === timeSlot.time &&
+        slot.user.id === timeSlot.user.id
+    );
+
   const canSelectMore = selectedSlots.length < 3;
 
   const summary = selectedSlots
+    .filter((slot: TimeSlot) => isBelongingToUser(slot))
     .sort(
       (a, b) =>
         DateTime.fromISO(`${a.day}T${a.time}:00`).toMillis() -

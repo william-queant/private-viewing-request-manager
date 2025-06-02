@@ -17,6 +17,7 @@ import type { User } from "~/types/User";
 import { UserAvatar } from "./UserAvatar";
 import { AvailableTimeSlot } from "./AvailableTimeSlot";
 import { usePrivateViewSettingsStore } from "~/stores/privateViewSettingsStore";
+import { useSelectedSlotsStore } from "~/stores/selectedSlotsStore";
 import { availableDateISO } from "~/utils/time";
 import type { TimeSlot } from "~/types/Time";
 
@@ -30,6 +31,11 @@ const today = DateTime.local().toISODate();
 
 export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
   const openDays = usePrivateViewSettingsStore((state) => state.openDays);
+  const clearSlots = useSelectedSlotsStore((state) => state.clearSlots);
+  const addSlot = useSelectedSlotsStore((state) => state.addSlot);
+  const selectedSlotsInStore = useSelectedSlotsStore(
+    (state) => state.selectedSlots
+  );
 
   const [preferredDate, setPreferredDate] = useState(
     availableDateISO(today, 1, openDays)
@@ -37,7 +43,8 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
   const [preferredTime, setPreferredTime] = useState([]);
 
   // Selected time slots
-  const [selectedSlots, setSelectedSlots] = useState<TimeSlot[]>([]);
+  const [selectedSlots, setSelectedSlots] =
+    useState<TimeSlot[]>(selectedSlotsInStore);
 
   //#region Dialog functions
   const formReset = () => {
@@ -47,7 +54,10 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
 
   const handleSubmit = () => {
     // Save the results
-    formReset();
+    clearSlots(user);
+    selectedSlots.forEach((slot) => {
+      addSlot(slot);
+    });
 
     onClose();
   };
