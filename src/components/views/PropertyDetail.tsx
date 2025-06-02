@@ -66,18 +66,20 @@ export function PropertyDetails(props: PropertyDetails) {
           padding: 20,
         }}
       />
-      <Button
-        style={{
-          width: "100%",
-        }}
-        size="4"
-        variant="solid"
-        mb="3"
-        disabled={!isPrivateViewingRequestAllowed || openDays.length === 0}
-        onClick={handleClick}
-      >
-        {requestLabel}
-      </Button>
+      {onClick && (
+        <Button
+          style={{
+            width: "100%",
+          }}
+          size="4"
+          variant="solid"
+          mb="3"
+          disabled={!isPrivateViewingRequestAllowed || openDays.length === 0}
+          onClick={handleClick}
+        >
+          {requestLabel}
+        </Button>
+      )}
     </Card>
   );
 }

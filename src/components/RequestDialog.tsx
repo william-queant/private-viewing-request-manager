@@ -11,7 +11,7 @@ import {
   IconButton,
   Text,
 } from "@radix-ui/themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import type { User } from "~/types/User";
 import { UserAvatar } from "./UserAvatar";
@@ -45,6 +45,17 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
   // Selected time slots
   const [selectedSlots, setSelectedSlots] =
     useState<TimeSlot[]>(selectedSlotsInStore);
+
+  useEffect(() => {
+    // Reset the form when the dialog opens
+    if (
+      JSON.stringify(selectedSlotsInStore) !== JSON.stringify(selectedSlots)
+    ) {
+      setSelectedSlots(selectedSlotsInStore);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, selectedSlotsInStore]);
 
   //#region Dialog functions
   const formReset = () => {

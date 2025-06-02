@@ -74,7 +74,9 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
   );
   const duration = usePrivateViewSettingsStore((state) => state.duration);
   const getSlotsByUser = useSelectedSlotsStore((state) => state.getSlotsByUser);
-
+  const getBookedSlotsForDateTime = useSelectedSlotsStore(
+    (state) => state.getBookedSlotsForDateTime
+  );
   const handleSlotToggle = (timeSlot: TimeSlot) => {
     setSelectedSlots((prev) => {
       // Check if slot is already selected by comparing unique ID
@@ -86,20 +88,30 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
         // Remove slot if already selected
         return prev.filter((slot: TimeSlot) => slot.id !== timeSlot.id);
       } else {
-        // Add slot if less than 3 are selected
-        if (prev.length < 3) {
+        // Check how many slots this specific user has already selected
+        const userSelectedSlots = prev.filter(
+          (slot) => slot.user.id === user.id
+        );
+
+        // Add slot if this user has less than 3 selected
+        if (userSelectedSlots.length < 3) {
           return [...prev, { ...timeSlot, status: "Pending" }];
         }
         return prev;
       }
     });
   };
+  const userSlots = getSlotsByUser(user);
+
   const isSlotSelected = (timeSlot: TimeSlot) =>
     selectedSlots.some((slot) => slot.id === timeSlot.id);
-  const canSelectMore = selectedSlots.length < 3;
+  const stateUserSelectedSlots = selectedSlots.filter(
+    (slot) => slot.user.id === user.id
+  );
 
-  const userSlots = getSlotsByUser(user);
-  const summary = userSlots
+  const canSelectMore = stateUserSelectedSlots.length < 3;
+
+  const summary = stateUserSelectedSlots
     .sort(
       (a, b) =>
         DateTime.fromISO(`${a.day}T${a.time}:00`).toMillis() -
@@ -129,23 +141,28 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
         <Text size="2" color="gray" mb="2">
           Select up to 3 preferred time slots:
         </Text>
-
         <Flex wrap="wrap" gap="2">
           {timeSlots.map((timeSlot) => {
             const isSelected = isSlotSelected(timeSlot);
-            const isDisabled = !canSelectMore && !isSelected;
+            const isBooked =
+              getBookedSlotsForDateTime(timeSlot.day, timeSlot.time).length > 0;
+            const isDisabledDueToLimit = !canSelectMore && !isSelected;
+            const isDisabled = isDisabledDueToLimit || isBooked;
 
             return (
               <Button
                 key={timeSlot.id}
                 size="2"
-                variant={isSelected ? "solid" : "outline"}
-                color={isSelected ? "blue" : "gray"}
+                variant={
+                  isSelected ? "solid" : isBooked ? "outline" : "outline"
+                }
+                color={isSelected ? "blue" : isBooked ? "gray" : "gray"}
                 onClick={() => handleSlotToggle(timeSlot)}
                 disabled={isDisabled}
                 style={{
                   minWidth: "80px",
-                  opacity: isDisabled ? 0.5 : 1,
+                  opacity: isBooked ? 0.5 : isDisabledDueToLimit ? 0.7 : 1,
+                  textDecoration: isBooked ? "line-through" : "none",
                 }}
               >
                 {timeSlot.time}
@@ -153,7 +170,6 @@ export function AvailableTimeSlot(props: AvailableTimeSlotProps) {
             );
           })}
         </Flex>
-
         <Box
           mt="3"
           p="2"

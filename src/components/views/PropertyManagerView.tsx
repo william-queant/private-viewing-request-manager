@@ -119,17 +119,17 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
   };
   const ViewingRequestPan = () => {
     const selectedSlots = useSelectedSlotsStore((state) => state.selectedSlots);
-    const updateSlotStatus = useSelectedSlotsStore(
-      (state) => state.updateSlotStatus
+    const approveSlotAndRemoveOthers = useSelectedSlotsStore(
+      (state) => state.approveSlotAndRemoveOthers
     );
-    const removeSlot = useSelectedSlotsStore((state) => state.removeSlot);
+    const refuseSlot = useSelectedSlotsStore((state) => state.refuseSlot);
 
     const handleApprove = (slot: TimeSlot) => {
-      updateSlotStatus(slot, "Booked");
+      approveSlotAndRemoveOthers(slot);
     };
 
-    const handleDecline = (slot: TimeSlot) => {
-      removeSlot(slot);
+    const handleRefuse = (slot: TimeSlot) => {
+      refuseSlot(slot);
     };
 
     // Group slots by status and then by user
@@ -209,13 +209,14 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
                       )}
                       {slot.status === "Pending" && (
                         <>
+                          {" "}
                           <Button
                             size="1"
                             color="red"
                             variant="soft"
-                            onClick={() => handleDecline(slot)}
+                            onClick={() => handleRefuse(slot)}
                           >
-                            Decline
+                            Refuse
                           </Button>
                           <Button
                             size="1"
