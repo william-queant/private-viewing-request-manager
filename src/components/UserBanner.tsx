@@ -1,7 +1,6 @@
 import { Grid } from "@radix-ui/themes";
 import type { User } from "~/types/User";
-import { PropertyManagerCard } from "./UserCard";
-import { PotentialTenantCard } from "./PotentialTenantCard";
+import { UserCard } from "./UserCard";
 
 interface UserBannerProps {
   users: User[];
@@ -12,7 +11,7 @@ export function UserBanner({ users }: UserBannerProps) {
     (user) => user.role === "Property Manager"
   );
   const potentialTenants = users.filter(
-    (user) => user.role === "Potential Tenant"
+    (user) => user.role === "Potential Tenant" && !user?.hidden
   );
 
   if (!propertyManager) {
@@ -36,10 +35,7 @@ export function UserBanner({ users }: UserBannerProps) {
           flex: "1 1 auto",
         }}
       >
-        <PropertyManagerCard
-          key={propertyManager.name}
-          user={propertyManager}
-        />
+        <UserCard key={propertyManager.name} user={propertyManager} />
       </div>
       <div
         style={{
@@ -51,7 +47,7 @@ export function UserBanner({ users }: UserBannerProps) {
         }}
       >
         {potentialTenants.map((user) => (
-          <PotentialTenantCard key={user.name} user={user} />
+          <UserCard key={user.name} user={user} />
         ))}
       </div>
     </Grid>

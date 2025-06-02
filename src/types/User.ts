@@ -6,4 +6,10 @@ export interface User {
   isConnected: boolean;
   phone: string;
   email: string;
+  hidden?: boolean; // Optional property to hide the user
+}
+
+export interface UserCard {
+  user: User;
+  onClick?: () => void;
 }

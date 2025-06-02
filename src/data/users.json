@@ -29,7 +29,8 @@
     "image": "BenWalter.jpg",
     "role": "Potential Tenant",
     "phone": "+64 223 857 1887",
-    "email": "ben.walter@xero.co.nz"
+    "email": "ben.walter@xero.co.nz",
+    "hidden": true
   },
   {
     "id": "frank-whitaker",
@@ -37,6 +38,7 @@
     "image": "FrankWhitaker.jpg",
     "role": "Potential Tenant",
     "phone": "+64 21 111 8897",
-    "email": "frank_whitaker512@gmail.com"
+    "email": "frank_whitaker512@gmail.com",
+    "hidden": true
   }
 ]

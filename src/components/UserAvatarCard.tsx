@@ -1,17 +1,9 @@
-import type { User } from "~/types/User";
+import type { UserCard } from "~/types/User";
 import { UserAvatar } from "./UserAvatar";
 import { Card } from "@radix-ui/themes/src/index.js";
 import { scrollToUser } from "~/utils/users";
 
-interface PotentialTenantCardProps {
-  user: User;
-  onClick?: () => void;
-}
-
-export function PotentialTenantCard({
-  user,
-  onClick,
-}: PotentialTenantCardProps) {
+export function UserAvatarCard({ user, onClick }: UserCard) {
   const { id } = user;
 
   const handleClick = () => {
