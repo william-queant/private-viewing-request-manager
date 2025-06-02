@@ -36,9 +36,17 @@ export const weekDays: Day[] = [
   DaysValues.Sunday,
 ] as const;
 
+export type TimeSlotStatus = "Available" | "Booked" | "Pending";
+
+export const TimeSlotStatusValues = {
+  Available: "Available" as TimeSlotStatus,
+  Booked: "Booked" as TimeSlotStatus,
+  Pending: "Pending" as TimeSlotStatus,
+};
+
 export type TimeSlot = {
-  day: Day;
+  day: string; // ISO date string, e.g., "2023-10-01"
   time: string; // 24-hour format, e.g., "14:00"
   user: User;
-  status: "available" | "booked" | "pending";
+  status: TimeSlotStatus;
 };

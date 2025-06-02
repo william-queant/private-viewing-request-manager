@@ -34,6 +34,12 @@ export const convert12HourTo24 = (props: Convert24To12Result): string => {
   return hour24.toString().padStart(2, "0");
 };
 
+export const formatTime24 = (hour: number, minutes: number): string => {
+  return `${hour.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+};
+
 // Returns the newt available day in ISO format based on the current date and following the available days
 export const availableDateISO = (
   dateISO: string | null, // ISO date string

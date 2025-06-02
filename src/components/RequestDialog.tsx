@@ -18,6 +18,7 @@ import { UserAvatar } from "./UserAvatar";
 import { AvailableTimeSlot } from "./AvailableTimeSlot";
 import { usePrivateViewSettingsStore } from "~/stores/privateViewSettingsStore";
 import { availableDateISO } from "~/utils/time";
+import type { TimeSlot } from "~/types/Time";
 
 interface RequestDialogProps {
   isOpen: boolean;
@@ -35,6 +36,9 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
   );
   const [preferredTime, setPreferredTime] = useState([]);
 
+  // Selected time slots
+  const [selectedSlots, setSelectedSlots] = useState<TimeSlot[]>([]);
+
   //#region Dialog functions
   const formReset = () => {
     setPreferredDate(availableDateISO(today, 1, openDays));
@@ -43,8 +47,8 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
 
   const handleSubmit = () => {
     // Save the results
-
     formReset();
+
     onClose();
   };
 
@@ -91,7 +95,7 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={handleClose}>
-      <Dialog.Content style={{ maxWidth: 450 }}>
+      <Dialog.Content style={{ maxWidth: 600 }}>
         <Dialog.Title>
           <Flex align="center" gap="3">
             <UserAvatar user={user} isSmall isCircle />
@@ -135,7 +139,7 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
             onClick={handlePrevious}
             disabled={
               DateTime.fromISO(preferredDate || today) <=
-              DateTime.fromISO(today)
+              DateTime.fromISO(availableDateISO(today, 1, openDays) || today)
             }
           >
             <ChevronLeftIcon />
@@ -150,7 +154,12 @@ export function RequestDialog({ isOpen, user, onClose }: RequestDialogProps) {
           </IconButton>
         </Flex>
 
-        <AvailableTimeSlot day={preferredDate || today} user={user} />
+        <AvailableTimeSlot
+          day={preferredDate || today}
+          user={user}
+          selectedSlots={selectedSlots}
+          setSelectedSlots={setSelectedSlots}
+        />
 
         <Flex direction="column" gap="4" style={{ marginTop: 20 }}>
           <Flex gap="3" mt="4" justify="end">
