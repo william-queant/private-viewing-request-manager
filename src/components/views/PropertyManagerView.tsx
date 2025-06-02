@@ -165,19 +165,25 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
             key={`${user.id}-${slots[0]?.status}`}
             style={{ padding: "16px" }}
           >
+            {" "}
             <Flex align="center" gap="3" mb="3">
               <UserAvatar user={user} isSmall isCircle />
               <Box>
                 <Text size="3" weight="bold">
                   {user.name}
                 </Text>
-                <Text size="2" color="gray" style={{ display: "block" }}>
-                  {slots.length} slot{slots.length > 1 ? "s" : ""}{" "}
-                  {slots[0]?.status.toLowerCase()}
-                </Text>
+                {slots[0]?.status === "Booked" && (
+                  <>
+                    <Text size="2" color="gray" style={{ display: "block" }}>
+                      📞 {user.phone}
+                    </Text>
+                    <Text size="2" color="gray" style={{ display: "block" }}>
+                      📧 {user.email}
+                    </Text>
+                  </>
+                )}
               </Box>
             </Flex>
-
             <Flex direction="column" gap="2">
               {slots
                 .sort(
@@ -187,7 +193,11 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
                 )
                 .map((slot) => (
                   <Flex key={slot.id} justify="between" align="center">
-                    <Text size="2">
+                    <Text
+                      size={slot.status === "Booked" ? "3" : "2"}
+                      weight={slot.status === "Booked" ? "bold" : "regular"}
+                      color={slot.status === "Booked" ? "green" : "gray"}
+                    >
                       {DateTime.fromISO(slot.day).toLocaleString(
                         DateTime.DATE_HUGE
                       )}{" "}
@@ -195,17 +205,14 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
                     </Text>
                     <Flex align="center" gap="2">
                       {slot.status === "Booked" && (
-                        <Text
+                        <Button
                           size="1"
-                          color="green"
-                          style={{
-                            backgroundColor: "var(--green-a3)",
-                            padding: "2px 8px",
-                            borderRadius: "4px",
-                          }}
+                          color="red"
+                          variant="outline"
+                          onClick={() => handleRefuse(slot)}
                         >
-                          {slot.status}
-                        </Text>
+                          Cancel
+                        </Button>
                       )}
                       {slot.status === "Pending" && (
                         <>
@@ -255,7 +262,7 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
             {pendingEntries.length > 0 && (
               <Box>
                 <Heading size="4" mb="3" color="orange">
-                  Pending Requests
+                  Pending
                 </Heading>
                 <Flex direction="column" gap="4">
                   {renderUserSlots(pendingEntries)}
@@ -266,7 +273,7 @@ export function PropertyManagerView({ user }: PropertyManagerViewProps) {
             {bookedEntries.length > 0 && (
               <Box>
                 <Heading size="4" mb="3" color="green">
-                  Booked Requests
+                  Booked
                 </Heading>
                 <Flex direction="column" gap="4">
                   {renderUserSlots(bookedEntries)}

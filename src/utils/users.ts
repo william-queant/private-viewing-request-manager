@@ -31,11 +31,13 @@ export const loadUsers = async (): Promise<User[]> => {
   const users = usersData as User[];
 
   const usersWithImages = await Promise.all(
-    users.map(async (user: User) => ({
-      ...user,
-      image: await importAvatar(user.image),
-      isConnected: user.role === "Property Manager",
-    }))
+    users
+      .filter((user) => !user?.hidden)
+      .map(async (user: User) => ({
+        ...user,
+        image: await importAvatar(user.image),
+        isConnected: user.role === "Property Manager",
+      }))
   );
 
   return usersWithImages;
