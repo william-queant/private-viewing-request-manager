@@ -126,9 +126,6 @@ export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
 
       refuseSlot: (slot: TimeSlot) => {
         set((state) => {
-          console.log(
-            `Refusing slot for ${slot.user.name} on ${slot.day} at ${slot.time}`
-          );
           return {
             selectedSlots: state.selectedSlots.filter(
               (existingSlot) =>
