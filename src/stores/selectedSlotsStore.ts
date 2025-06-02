@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { TimeSlot } from "~/types/Time";
+import type { TimeSlot, TimeSlotStatus } from "~/types/Time";
 import type { User } from "~/types/User";
 
 interface SelectedSlotsStore {
@@ -8,6 +8,7 @@ interface SelectedSlotsStore {
   addSlot: (slot: TimeSlot) => void;
   removeSlot: (slot: TimeSlot) => void;
   clearSlots: (user: User) => void;
+  updateSlotStatus: (slot: TimeSlot, newStatus: TimeSlotStatus) => void;
 }
 
 export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
@@ -51,12 +52,23 @@ export const useSelectedSlotsStore = create<SelectedSlotsStore>()(
           ),
         }));
       },
-
       clearSlots: (user) => {
         set((state) => ({
           selectedSlots: state.selectedSlots.filter(
             (existingSlot) =>
               !(existingSlot.user === user && existingSlot.status !== "Booked")
+          ),
+        }));
+      },
+
+      updateSlotStatus: (slot: TimeSlot, newStatus: TimeSlotStatus) => {
+        set((state) => ({
+          selectedSlots: state.selectedSlots.map((existingSlot) =>
+            existingSlot.day === slot.day &&
+            existingSlot.time === slot.time &&
+            existingSlot.user.id === slot.user.id
+              ? { ...existingSlot, status: newStatus }
+              : existingSlot
           ),
         }));
       },
